@@ -279,14 +279,12 @@ abstract class BaseAmqp
     }
 
     /**
-     * @param string $eventName
      * @param AMQPEvent  $event
      */
-    protected function dispatchEvent($eventName, AMQPEvent $event)
+    protected function dispatchEvent(AMQPEvent $event)
     {
         if ($this->getEventDispatcher()) {
             $this->getEventDispatcher()->dispatch(
-                $eventName,
                 $event
             );
         }
