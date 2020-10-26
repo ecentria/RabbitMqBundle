@@ -262,8 +262,8 @@ class OldSoundRabbitMqExtension extends Extension
             }
 
             $definition = new Definition('%old_sound_rabbit_mq.multi_consumer.class%');
-            $definition->setPublic(true);
             $definition
+                ->setPublic(true)
                 ->addTag('old_sound_rabbit_mq.base_amqp')
                 ->addTag('old_sound_rabbit_mq.multi_consumer')
                 ->addMethodCall('setExchangeOptions', array($this->normalizeArgumentKeys($consumer['exchange_options'])))
@@ -336,8 +336,8 @@ class OldSoundRabbitMqExtension extends Extension
             }
 
             $definition = new Definition('%old_sound_rabbit_mq.dynamic_consumer.class%');
-            $definition->setPublic(true);
             $definition
+                ->setPublic(true)
                 ->addTag('old_sound_rabbit_mq.base_amqp')
                 ->addTag('old_sound_rabbit_mq.consumer')
                 ->addTag('old_sound_rabbit_mq.dynamic_consumer')
@@ -363,6 +363,16 @@ class OldSoundRabbitMqExtension extends Extension
             if (isset($consumer['idle_timeout_exit_code'])) {
                 $definition->addMethodCall('setIdleTimeoutExitCode', array($consumer['idle_timeout_exit_code']));
             }
+            if (isset($consumer['graceful_max_execution'])) {
+                $definition->addMethodCall(
+                    'setGracefulMaxExecutionDateTimeFromSecondsInTheFuture',
+                    array($consumer['graceful_max_execution']['timeout'])
+                );
+                $definition->addMethodCall(
+                    'setGracefulMaxExecutionTimeoutExitCode',
+                    array($consumer['graceful_max_execution']['exit_code'])
+                );
+            }
             if (!$consumer['auto_setup_fabric']) {
                 $definition->addMethodCall('disableAutoSetupFabric');
             }
@@ -387,13 +397,13 @@ class OldSoundRabbitMqExtension extends Extension
     {
         foreach ($this->config['batch_consumers'] as $key => $consumer) {
             $definition = new Definition('%old_sound_rabbit_mq.batch_consumer.class%');
-            $definition->setPublic(true);
 
             if (!isset($consumer['exchange_options'])) {
                 $consumer['exchange_options'] = $this->getDefaultExchangeOptions();
             }
 
             $definition
+                ->setPublic(true)
                 ->addTag('old_sound_rabbit_mq.base_amqp')
                 ->addTag('old_sound_rabbit_mq.batch_consumer')
                 ->addMethodCall('setTimeoutWait', array($consumer['timeout_wait']))
@@ -448,9 +458,8 @@ class OldSoundRabbitMqExtension extends Extension
     {
         foreach ($this->config['anon_consumers'] as $key => $anon) {
             $definition = new Definition('%old_sound_rabbit_mq.anon_consumer.class%');
-            $definition->setPublic(true);
-
             $definition
+                ->setPublic(true)
                 ->addTag('old_sound_rabbit_mq.base_amqp')
                 ->addTag('old_sound_rabbit_mq.anon_consumer')
                 ->addMethodCall('setExchangeOptions', array($this->normalizeArgumentKeys($anon['exchange_options'])))
