@@ -394,6 +394,7 @@ class OldSoundRabbitMqExtension extends Extension
             }
 
             $definition
+                ->setPublic(true)
                 ->addTag('old_sound_rabbit_mq.base_amqp')
                 ->addTag('old_sound_rabbit_mq.batch_consumer')
                 ->addMethodCall('setTimeoutWait', array($consumer['timeout_wait']))
