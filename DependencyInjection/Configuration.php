@@ -15,9 +15,13 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $tree = new TreeBuilder();
-
-        $rootNode = $tree->root('old_sound_rabbit_mq');
+        $tree = new TreeBuilder('old_sound_rabbit_mq');
+        if (method_exists($tree, 'getRootNode')) {
+            $rootNode = $tree->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $rootNode = $tree->root('old_sound_rabbit_mq');
+        }
 
         $rootNode
             ->children()
